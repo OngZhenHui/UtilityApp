@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">FinanceTracker</string>
+    <string name="mainAdd">+\nADD</string>
+    <string name="theme">Theme</string>
+    <string name="white">White</string>
+    <string name="blue">Blue</string>
+    <string name="green">Green</string>
+    <string name="red">Red</string>
+    <string name="english">English - Default</string>
+    <string name="japanese">Japanese</string>
+    <string name="korean">Korean</string>
+    <string name="chinese">Chinese</string>
+    <string name="date">Date:</string>
+    <string name="start_amt">Start Amt:</string>
+    <string name="remain_amt">Amount Left: $</string>
+    <string name="add_value">+\nAdd Transaction</string>
+    <string name="select_date">Select Date</string>
+    <string name="zero">0.00</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_transaction">Add Transaction</string>
+    <string name="amt">Amount:</string>
+    <string name="title">Title:</string>
+    <string name="confirm">Confirm</string>
+</resources>
