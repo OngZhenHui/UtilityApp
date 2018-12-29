@@ -44,6 +44,7 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
 
     private int chg_count;
     private int item_count;
+    private Boolean check_trans;
     private String dateRef;
     private Double amt_left;
 
@@ -77,13 +78,15 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
         final NumberFormat format = NumberFormat.getCurrencyInstance();
 
         dateRef = MainActivity.dayRef;
+        check_trans = false;
 
         //firebase
         database = FirebaseDatabase.getInstance();
         translist = database.getReference();
         trans_view = (ListView) findViewById(R.id.transList);
 
-        if(!dateRef.isEmpty()){
+
+        if(!dateRef.isEmpty() || !dateRef.equals("")){
             date.setText(dateRef);
             translist.child("Days").child(dateRef).child("Start").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -92,6 +95,47 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
                     startAmt.setText(startValue);
                     amt_left = Double.parseDouble(startValue);
                     remain_amt.setText(amt_left.toString());
+                    check_trans = true;
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        //if end
+        }
+        if(check_trans=true){
+            //array adapter for reading firebase data
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTransactions);
+            trans_view.setAdapter(arrayAdapter);
+            childListener = translist.child("Days").child(dateRef).child("Transactions").addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Double number = Double.parseDouble(dataSnapshot.getValue().toString());
+                    String value = dataSnapshot.getKey() + ":\n\n" + format.format(number);
+                    mTransactions.add(value);
+                    amt_left = amt_left + number;
+                    String amt = format.format(amt_left);
+                    remain_amt.setText(amt);
+                    arrayAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    arrayAdapter.remove(arrayAdapter.getItem(mTransactions.indexOf(dataSnapshot.getKey())));
+                    arrayAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
                 }
 
                 @Override
@@ -100,45 +144,6 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
                 }
             });
         }
-
-
-        //array adapter for reading firebase data
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTransactions);
-        trans_view.setAdapter(arrayAdapter);
-        childListener = translist.child("Days").child(dateRef).child("Transactions").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Double number = Double.parseDouble(dataSnapshot.getValue().toString());
-                String value = dataSnapshot.getKey() + ":\n\n" + format.format(number);
-                mTransactions.add(value);
-                amt_left = amt_left + number;
-                String amt = format.format(amt_left);
-                remain_amt.setText(amt);
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                arrayAdapter.remove(arrayAdapter.getItem(mTransactions.indexOf(dataSnapshot.getKey())));
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 
@@ -171,9 +176,10 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
                                 Toast.makeText(TransactionActivity.this, "Please enter an amount", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(TransactionActivity.this, "Amount Added", Toast.LENGTH_SHORT).show();
-                                String fDate = date.getText().toString();
-                                translist.child("Days").child(fDate).child("Transactions").child(mTitle.getText().toString()).setValue(mAmt.getText().toString());
-                                translist.child("Days").child(fDate).child("Start").setValue(startAmt.getText().toString());
+                                check_trans = true;
+                                dateRef = date.getText().toString();
+                                translist.child("Days").child(dateRef).child("Transactions").child(mTitle.getText().toString()).setValue(mAmt.getText().toString());
+                                translist.child("Days").child(dateRef).child("Start").setValue(startAmt.getText().toString());
                                 dialog.dismiss();
                             }
                         }
