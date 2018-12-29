@@ -30,7 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <ListView
+    <com.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/transList"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -40,7 +40,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/start_amt" />
+        app:layout_constraintTop_toBottomOf="@+id/start_amt">
+    </com.baoyz.swipemenulistview.SwipeMenuListView>
 
     <TextView
         android:id="@+id/textView3"

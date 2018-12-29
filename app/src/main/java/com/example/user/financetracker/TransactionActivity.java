@@ -24,6 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //firebase import
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,7 +57,7 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
     private DatabaseReference translist;
     private ChildEventListener childListener;
     private ChildEventListener secondListener;
-    private ListView trans_view;
+    private SwipeMenuListView trans_view;
 
     //Arraylist & Adapter
     private ArrayList<String> mTransactions =  new ArrayList<>();
@@ -83,7 +87,7 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
         //firebase
         database = FirebaseDatabase.getInstance();
         translist = database.getReference();
-        trans_view = (ListView) findViewById(R.id.transList);
+        trans_view = (SwipeMenuListView) findViewById(R.id.transList);
 
 
         if(!dateRef.isEmpty() || !dateRef.equals("")){
@@ -145,6 +149,34 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
             });
         }
 
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.RED));
+                // set item width
+                deleteItem.setWidth(170);
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_delete);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+        trans_view.setMenuCreator(creator);
+
+        trans_view.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                return false;
+            }
+        });
+
+    //onCreate end
     }
 
     @Override
