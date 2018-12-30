@@ -1,10 +1,13 @@
 package com.example.user.financetracker;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ public class SetttingsActivity extends AppCompatActivity {
 
     private ConstraintLayout settings;
     private RadioGroup theme, lang;
+    private Button confirm;
     private SharedPreferences preferences;
 
     @Override
@@ -24,6 +28,7 @@ public class SetttingsActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences("value", MODE_PRIVATE);
 
+        confirm = (Button) findViewById(R.id.confirm_set);
         settings = (ConstraintLayout) findViewById(R.id.settings);
         theme = (RadioGroup) findViewById(R.id.theme);
         theme.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -71,25 +76,35 @@ public class SetttingsActivity extends AppCompatActivity {
                 Toast.makeText(SetttingsActivity.this, checkLang, Toast.LENGTH_SHORT).show();
 
                 if(checkLang.equals("Japanese")){
-                    preferences.edit()
-                            .putString("lang", "ja")
-                            .apply();
                     Locale locale = new Locale("ja");
                     Locale.setDefault(locale);
                     Configuration config = new Configuration();
                     config.locale = locale;
                     getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+                    preferences.edit()
+                            .putString("lang", "ja")
+                            .apply();
                 }
                 else if(checkLang.equals("English")){
-                    preferences.edit()
-                            .putString("lang", "en")
-                            .apply();
                     Locale locale = new Locale("en");
                     Locale.setDefault(locale);
                     Configuration config = new Configuration();
                     config.locale = locale;
                     getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+                    preferences.edit()
+                            .putString("lang", "en")
+                            .apply();
                 }
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent confirm = new Intent(SetttingsActivity.this, MainActivity.class);
+                startActivity(confirm);
             }
         });
     }
