@@ -1,10 +1,13 @@
 package com.example.user.financetracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,12 +33,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ConstraintLayout main;
     private SwipeMenuListView listview_days;
     private Button addBtn;
     public static String dayRef;
+    private SharedPreferences preferences;
 
     //firebase
     private FirebaseDatabase database;
@@ -54,8 +60,10 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         financelist = database.getReference();
 
+        main = (ConstraintLayout) findViewById(R.id.main);
         listview_days = (SwipeMenuListView) findViewById(R.id.dayList);
         addBtn = (Button) findViewById(R.id.addDay);
+        preferences = getSharedPreferences("value", MODE_PRIVATE);
 
         //array adapter for reading firebase data
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list_days);
@@ -152,4 +160,31 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String color = preferences.getString("color", "white");
+
+        if(color.equals("red")){
+            main.setBackgroundColor(getResources().getColor(R.color.red));
+        }
+        else if(color.equals("green")){
+            main.setBackgroundColor(getResources().getColor(R.color.green));
+        }
+        else if (color.equals("blue")){
+            main.setBackgroundColor(getResources().getColor(R.color.blue));
+        }
+        else {
+            main.setBackgroundColor(getResources().getColor(R.color.defwhite));
+        }
+
+        String lang = preferences.getString("lang", "en");
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+    }
 }

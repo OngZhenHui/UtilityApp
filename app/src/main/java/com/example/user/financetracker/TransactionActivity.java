@@ -7,10 +7,12 @@ import java.util.Calendar;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,11 +42,13 @@ import java.util.Calendar;
 
 public class TransactionActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private SharedPreferences preferences;
     private Button add, save, cancel;
     private TextView date, remain_amt;
     private EditText startAmt;
     private Boolean check;
     private DatePickerDialog.OnDateSetListener mPickDate;
+    private ConstraintLayout trans;
 
     private int chg_count;
     private int item_count;
@@ -78,6 +82,9 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
         date.setOnClickListener(this);
         startAmt = (EditText) findViewById(R.id.start_amt);
         remain_amt = (TextView) findViewById(R.id.remain_amt);
+
+        trans = (ConstraintLayout) findViewById(R.id.trans);
+        preferences = getSharedPreferences("value", MODE_PRIVATE);
 
         final NumberFormat format = NumberFormat.getCurrencyInstance();
 
@@ -272,4 +279,21 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
             return false;
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String color = preferences.getString("color", "white");
+
+        if (color.equals("red")) {
+            trans.setBackgroundColor(getResources().getColor(R.color.red));
+        } else if (color.equals("green")) {
+            trans.setBackgroundColor(getResources().getColor(R.color.green));
+        } else if (color.equals("blue")) {
+            trans.setBackgroundColor(getResources().getColor(R.color.blue));
+        } else {
+            trans.setBackgroundColor(getResources().getColor(R.color.defwhite));
+        }
+    }    
 }
