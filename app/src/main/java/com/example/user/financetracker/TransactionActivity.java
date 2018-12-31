@@ -50,8 +50,8 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
     private DatePickerDialog.OnDateSetListener mPickDate;
     private ConstraintLayout trans;
 
-    private int chg_count;
-    private int item_count;
+    private int item_count = 0;
+    private int chg_count = 0;
     private Boolean check_trans;
     private String dateRef;
     private Double amt_left;
@@ -65,6 +65,7 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
 
     //Arraylist & Adapter
     private ArrayList<String> mTransactions =  new ArrayList<>();
+    private ArrayList<String> keylist =  new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +127,8 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     Double number = Double.parseDouble(dataSnapshot.getValue().toString());
                     String value = dataSnapshot.getKey() + ":\n\n" + format.format(number);
+                    String key = dataSnapshot.getKey();
+                    keylist.add(key);
                     mTransactions.add(value);
                     amt_left = amt_left + number;
                     String amt = format.format(amt_left);
@@ -140,7 +143,9 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    arrayAdapter.remove(arrayAdapter.getItem(mTransactions.indexOf(dataSnapshot.getKey())));
+                    Double number = Double.parseDouble(dataSnapshot.getValue().toString());
+                    String value = dataSnapshot.getKey() + ":\n\n" + format.format(number);
+                    arrayAdapter.remove(arrayAdapter.getItem(mTransactions.indexOf(value)));
                     arrayAdapter.notifyDataSetChanged();
                 }
 
@@ -179,6 +184,8 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
         trans_view.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                translist.child("Days").child(dateRef).child("Transactions")
+                        .child(keylist.get(position)).removeValue();
                 return false;
             }
         });
@@ -215,11 +222,16 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
                                 Toast.makeText(TransactionActivity.this, "Please enter an amount", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(TransactionActivity.this, "Amount Added", Toast.LENGTH_SHORT).show();
-                                check_trans = true;
-                                dateRef = date.getText().toString();
-                                translist.child("Days").child(dateRef).child("Transactions").child(mTitle.getText().toString()).setValue(mAmt.getText().toString());
-                                translist.child("Days").child(dateRef).child("Start").setValue(startAmt.getText().toString());
+                                String fdate = date.getText().toString();
+                                MainActivity.dayRef = fdate;
+                                translist.child("Days").child(fdate).child("Transactions").child(mTitle.getText().toString()).setValue(mAmt.getText().toString());
+                                translist.child("Days").child(fdate).child("Start").setValue(startAmt.getText().toString());
                                 dialog.dismiss();
+                                chg_count += 1;
+                                if(!dateRef.equals(fdate)) {
+                                    Intent refresh = new Intent(TransactionActivity.this, TransactionActivity.class);
+                                    startActivity(refresh);
+                                }
                             }
                         }
                     });
@@ -241,6 +253,12 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
                 startActivity(save);
                 break;
             case R.id.cancelBtn:
+                item_count = mTransactions.size();
+                while(chg_count>0){
+                   translist.child("Days").child(dateRef).child("Transactions")
+                           .child(keylist.get(item_count-chg_count)).removeValue();
+                   chg_count -=1;
+               }
                 Intent cancel = new Intent(TransactionActivity.this, MainActivity.class);
                 startActivity(cancel);
                 break;
@@ -295,5 +313,5 @@ public class TransactionActivity extends AppCompatActivity implements View.OnCli
         } else {
             trans.setBackgroundColor(getResources().getColor(R.color.defwhite));
         }
-    }    
+    }
 }
