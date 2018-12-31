@@ -16,7 +16,7 @@
     <string name="select_date">日付を選択</string>
     <string name="zero">0.00</string>
     <string name="save">セーブ</string>
-    <string name="cancel">チャンネル</string>
+    <string name="cancel">キャンセル</string>
     <string name="add_transaction">トランザクションを追加</string>
     <string name="amt">額：</string>
     <string name="title">タイトル：</string>

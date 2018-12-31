@@ -20,6 +20,7 @@ public class SetttingsActivity extends AppCompatActivity {
     private RadioGroup theme, lang;
     private Button confirm;
     private SharedPreferences preferences;
+    private RadioButton whiteBg,blueBg,greenBg,redBg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,10 @@ public class SetttingsActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences("value", MODE_PRIVATE);
 
+        whiteBg = (RadioButton) findViewById(R.id.whiteBg);
+        greenBg = (RadioButton) findViewById(R.id.greenBg);
+        blueBg = (RadioButton) findViewById(R.id.blueBg);
+        redBg = (RadioButton) findViewById(R.id.redBg);
         confirm = (Button) findViewById(R.id.confirm_set);
         settings = (ConstraintLayout) findViewById(R.id.settings);
         theme = (RadioGroup) findViewById(R.id.theme);
@@ -37,21 +42,20 @@ public class SetttingsActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
                 RadioButton tempColor = (RadioButton) findViewById(checkedId);
-                String checkColor = tempColor.getText().toString();
-                Toast.makeText(SetttingsActivity.this, checkColor, Toast.LENGTH_SHORT).show();
-                if(checkColor.equals("Blue")) {
+                int checkColor = tempColor.getId();
+                if(checkColor==blueBg.getId()){
                     settings.setBackgroundColor(getResources().getColor(R.color.blue));
                     preferences.edit()
                             .putString("color", "blue")
                             .apply();
                 }
-                else if(checkColor.equals("Green")){
+                else if((checkColor==greenBg.getId())){
                     settings.setBackgroundColor(getResources().getColor(R.color.green));
                     preferences.edit()
                             .putString("color", "green")
                             .apply();
                 }
-                else if(checkColor.equals("Red")){
+                else if((checkColor==redBg.getId())){
                     settings.setBackgroundColor(getResources().getColor(R.color.red));
                     preferences.edit()
                             .putString("color", "red")
