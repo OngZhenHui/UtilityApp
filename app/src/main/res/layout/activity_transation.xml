@@ -127,6 +127,7 @@
         android:layout_marginRight="8dp"
         android:background="@color/lightgrey"
         android:text="@string/save"
+        android:drawableLeft="@drawable/save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -139,6 +140,7 @@
         android:layout_marginRight="8dp"
         android:background="@color/lightgrey"
         android:text="@string/cancel"
+        android:drawableLeft="@drawable/back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveBtn" />
 
