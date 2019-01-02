@@ -10,15 +10,21 @@
     android:layout_marginBottom="0sp"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="MM-DD-YYYY" />
+
     <com.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/dayList"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/addDay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </com.baoyz.swipemenulistview.SwipeMenuListView>
+        app:layout_constraintTop_toBottomOf="@+id/textView4"></com.baoyz.swipemenulistview.SwipeMenuListView>
 
 
     <Button
