@@ -23,4 +23,5 @@
     <string name="confirm">確認</string>
     <string name="settings">設定</string>
     <string name="language">言語</string>
+    <string name="date_format">MM-DD-YYYY</string>
 </resources>
